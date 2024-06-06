@@ -47,21 +47,12 @@ const Trending = mongoose.model('Trending', trendingSchema);
  
 async function runSeleniumScript(ipAddress) {
 
-  let driver;
+  let driver = await new Builder().forBrowser('chrome').build();;
   let trendList = [];
   let scriptRunId;
   let currentDate;
 
   try {
-      let options = new chrome.Options();
-      options.addArguments('--headless');
-      options.addArguments('--no-sandbox');
-      options.addArguments('--disable-dev-shm-usage');
-      options.addArguments('--disable-gpu');
-      options.addArguments('--window-size=1920x1080');
-
-      driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
-
       await driver.manage().setTimeouts({ implicit: 10000 });
       await driver.get('https://x.com/');
 
@@ -109,16 +100,19 @@ async function runSeleniumScript(ipAddress) {
         try {
           let element1 = await driver.findElement(By.xpath(xpath1));
           trendList.push(await element1.getText());
+          console.log(`Trend ${x-2} found`);
         } catch (e) {
           try {
             let element2 = await driver.findElement(By.xpath(xpath2));
             trendList.push(await element2.getText());
+            console.log(`Trend ${x-2} found`);
           } catch (e) {
             try {
               let element3 = await driver.findElement(By.xpath(xpath3));
               trendList.push(await element3.getText());
+              console.log(`Trend ${x-2} found`);
             } catch (e) {
-              console.log(`Trend ${x} not found`);
+              console.log(`Trend ${x-2} not found`);
             }
           }
         }
