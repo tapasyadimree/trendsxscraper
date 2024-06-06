@@ -4,6 +4,7 @@ const chrome = require('selenium-webdriver/chrome');
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const { error } = require('console');
 require('dotenv').config()
 
 const app = express();
@@ -29,7 +30,20 @@ const trendingSchema = new Schema({
 const Trending = mongoose.model('Trending', trendingSchema);
 
 // Connect to MongoDB
-mongoose.connect(process.env.MY_DATABASE_URL, { useNewUrlParser: true});
+(async () => {
+  try {
+    await mongoose.connect(process.env.MY_DATABASE_URI);
+    console.log('Connected to Mongo DB');
+    app.on("error", (error) =>{
+      console.log("ERRRR: ", error);
+      throw error;
+    })
+  } catch (error) {
+    console.error("MONGODB CONNECTION ISSUE: ",error)
+    throw error;
+  }
+})()
+
  
 async function runSeleniumScript(ipAddress) {
 
