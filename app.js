@@ -47,12 +47,21 @@ const Trending = mongoose.model('Trending', trendingSchema);
  
 async function runSeleniumScript(ipAddress) {
 
-  let driver = await new Builder().forBrowser(Browser.CHROME).build()
+  let driver;
   let trendList = [];
   let scriptRunId;
   let currentDate;
 
   try {
+      let options = new chrome.Options();
+      options.addArguments('--headless');
+      options.addArguments('--no-sandbox');
+      options.addArguments('--disable-dev-shm-usage');
+      options.addArguments('--disable-gpu');
+      options.addArguments('--window-size=1920x1080');
+
+      driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
+
       await driver.manage().setTimeouts({ implicit: 10000 });
       await driver.get('https://x.com/');
 
